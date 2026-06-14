@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Restaurant</title>
+</head>
+
+<body>
+
+<h1>Add Restaurant</h1>
+
+<form method="POST">
+
+    <label>Restaurant Name *</label>
+    <br>
+    <input type="text" name="restaurant_name" required>
+
+    <br><br>
+
+    <label>Phone Number *</label>
+    <br>
+    <input type="text" name="phone_number" required>
+
+    <br><br>
+
+    <label>Address *</label>
+    <br>
+    <input type="text" name="address" required>
+
+    <br><br>
+
+    <label>Cuisine Type *</label>
+    <br>
+
+    <select name="cuisine_type" required>
+        <option value="">Select Cuisine</option>
+        <option>Indian</option>
+        <option>Italian</option>
+        <option>Chinese</option>
+        <option>Mexican</option>
+        <option>American</option>
+    </select>
+
+    <br><br>
+
+    <button type="submit">Save Restaurant</button>
+
+</form>
+
+<br>
+
+<a href="/dashboard">Back to Dashboard</a>
+
+</body>
+</html>

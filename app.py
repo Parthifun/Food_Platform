@@ -2,10 +2,15 @@ import re
 
 from flask import Flask, render_template, request, session, redirect, url_for
 from database import (
+    create_restaurant,
+    get_menu_items_by_restaurant,
+    get_restaurant_by_id,
+    get_restaurants_by_owner,
     get_user_by_email,
     get_user_by_login,
     get_user_by_phone,
     create_user
+    
 )
 app = Flask(__name__)
 app.secret_key = "food_platform_secret_key"
@@ -31,6 +36,7 @@ def login():
             return "Invalid password."
 
         session["first_name"] = user[1]
+        session["email"] = user[4]
         session["role"] = user[6]
         return redirect(url_for("dashboard"))
     return render_template("login.html")
@@ -46,6 +52,67 @@ def dashboard():
         first_name=session["first_name"],
         role=session["role"]
     )
+
+@app.route("/add_restaurant", methods=["GET", "POST"])
+def add_restaurant():
+
+    if "first_name" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+
+        restaurant_name = request.form["restaurant_name"]
+        phone_number = request.form["phone_number"]
+        address = request.form["address"]
+        cuisine_type = request.form["cuisine_type"]
+
+        create_restaurant(
+            session["email"],
+            restaurant_name,
+            phone_number,
+            address,
+            cuisine_type
+        )
+
+        return render_template("success_restaurant.html")
+
+    return render_template("add_restaurant.html")
+
+@app.route("/view_restaurants")
+def view_restaurants():
+
+    if "email" not in session:
+        return redirect(url_for("login"))
+
+    restaurants = get_restaurants_by_owner(
+        session["email"]
+    )
+
+    return render_template(
+        "view_restaurants.html",
+        restaurants=restaurants
+    )
+
+@app.route("/restaurant/<int:restaurant_id>")
+def restaurant_details(restaurant_id):
+
+    if "email" not in session:
+        return redirect(url_for("login"))
+
+    restaurant = get_restaurant_by_id(
+        restaurant_id
+    )
+
+    menu_items = get_menu_items_by_restaurant(
+        restaurant_id
+    )
+
+    return render_template(
+        "restaurant_details.html",
+        restaurant=restaurant,
+        menu_items=menu_items
+    )
+
 @app.route("/logout")
 def logout():
 

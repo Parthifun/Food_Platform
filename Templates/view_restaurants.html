@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Restaurants</title>
+</head>
+
+<body>
+
+<h1>My Restaurants</h1>
+
+{% if restaurants %}
+
+    {% for restaurant in restaurants %}
+
+        <hr>
+
+        <h2>
+
+            <a href="/restaurant/{{ restaurant[0] }}">
+
+                {{ restaurant[2] }}
+
+            </a>
+
+        </h2>
+
+        <p>Phone: {{ restaurant[3] }}</p>
+
+        <p>Address: {{ restaurant[4] }}</p>
+
+        <p>Cuisine: {{ restaurant[5] }}</p>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No restaurants found.</p>
+
+{% endif %}
+
+<br>
+
+<a href="/dashboard">
+    <button>Back to Dashboard</button>
+</a>
+
+<a href="/add_restaurant">
+    <button>Add Restaurant</button>
+</a>
+
+</body>
+</html>

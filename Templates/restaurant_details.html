@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ restaurant[2] }}</title>
+</head>
+
+<body>
+
+<h1>{{ restaurant[2] }}</h1>
+
+<p>
+
+    {{ restaurant[4] }}
+
+    •
+
+    {{ restaurant[3] }}
+
+    •
+
+    {{ restaurant[5] }}
+
+</p>
+
+<hr>
+
+<h2>Menu</h2>
+
+{% if menu_items %}
+
+    {% for item in menu_items %}
+
+        <div>
+
+            <h3>{{ item[2] }}</h3>
+
+            <p>{{ item[3] }}</p>
+
+            <strong>${{ item[4] }}</strong>
+
+            <br><br>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No menu items available.</p>
+
+{% endif %}
+
+<hr>
+
+<button>Edit Restaurant</button>
+
+<button>Add Menu Item</button>
+
+<br><br>
+
+<a href="/view_restaurants">
+
+    <button>Back</button>
+
+</a>
+
+</body>
+</html>
