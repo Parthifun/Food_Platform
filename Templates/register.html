@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+</head>
+<body>
+
+<h1>Create Account</h1>
+
+<form method="POST">
+
+
+
+<label>First Name:*</label>
+<br>
+<input type="text" name="first_name">
+<br><br>
+
+<label>Last Name:*</label>
+<br>
+<input type="text" name="last_name">
+<br><br>
+
+<label>Phone Number:*</label>
+<br>
+<input type="tel" name="phone_number">
+<br><br>
+
+<label>Email:</label>
+<br>
+<input type="email" name="email">
+<br><br>
+
+<label>Password:*</label>
+<br>
+<input type="password" name="password">
+<br><br>
+<small>
+Password must contain:
+<ul>
+<li>At least 8 characters</li>
+<li>At least 1 uppercase letter</li>
+<li>At least 1 lowercase letter</li>
+<li>At least 1 number</li>
+<li>At least 1 special character</li>
+</ul>
+</small>
+
+<label>Confirm Password:*</label>
+<br>
+<input type="password" name="confirm_password">
+<br><br>
+
+<label>Role:*</label>
+<br>
+
+<select name="role">
+    <option>Customer</option>
+    <option>Restaurant Owner</option>
+</select>
+
+<br><br>
+
+<button type="submit">Register</button>
+
+</form>
