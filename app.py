@@ -12,7 +12,9 @@ from database import (
     create_user,
     create_menu_item,
     get_menu_item_by_id,
-    update_menu_item
+    update_menu_item,
+    delete_menu_item,
+    update_restaurant
 )
 app = Flask(__name__)
 app.secret_key = "food_platform_secret_key"
@@ -116,6 +118,44 @@ def restaurant_details(restaurant_id):
     )
 
 @app.route(
+    "/edit_restaurant/<int:restaurant_id>",
+    methods=["GET", "POST"]
+)
+def edit_restaurant(restaurant_id):
+
+    if "email" not in session:
+        return redirect(url_for("login"))
+
+    restaurant = get_restaurant_by_id(restaurant_id)
+
+    if request.method == "POST":
+
+        restaurant_name = request.form["restaurant_name"]
+        phone_number = request.form["phone_number"]
+        address = request.form["address"]
+        cuisine_type = request.form["cuisine_type"]
+
+        update_restaurant(
+            restaurant_id,
+            restaurant_name,
+            phone_number,
+            address,
+            cuisine_type
+        )
+
+        return redirect(
+            url_for(
+                "restaurant_details",
+                restaurant_id=restaurant_id
+            )
+        )
+
+    return render_template(
+        "edit_restaurant.html",
+        restaurant=restaurant
+    )
+
+@app.route(
     "/restaurant/<int:restaurant_id>/add_menu_item",
     methods=["GET", "POST"]
 )
@@ -148,6 +188,63 @@ def add_menu_item(restaurant_id):
 
     return render_template(
         "add_menu_item.html"
+    )
+
+@app.route(
+    "/edit_menu_item/<int:menu_item_id>",
+    methods=["GET", "POST"]
+)
+def edit_menu_item(menu_item_id):
+
+    if "email" not in session:
+        return redirect(url_for("login"))
+
+    menu_item = get_menu_item_by_id(menu_item_id)
+
+    if request.method == "POST":
+
+        item_name = request.form["item_name"]
+        description = request.form["description"]
+        price = request.form["price"]
+        category = request.form["category"]
+
+        update_menu_item(
+            menu_item_id,
+            item_name,
+            description,
+            price,
+            category
+        )
+
+        return redirect(
+            url_for(
+                "restaurant_details",
+                restaurant_id=menu_item[1]
+            )
+        )
+
+    return render_template(
+        "edit_menu_item.html",
+        menu_item=menu_item
+    )
+
+@app.route("/delete_menu_item/<int:menu_item_id>")
+def delete_menu_item_route(menu_item_id):
+
+    if "email" not in session:
+        return redirect(url_for("login"))
+
+    menu_item = get_menu_item_by_id(menu_item_id)
+
+    restaurant_id = menu_item[1]
+
+    delete_menu_item(menu_item_id)
+
+    return redirect(
+        url_for(
+            "restaurant_details",
+            restaurant_id=restaurant_id
+        )
     )
 
 @app.route("/logout")

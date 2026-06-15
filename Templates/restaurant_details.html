@@ -40,6 +40,19 @@
 
             <br><br>
 
+                <a href="/edit_menu_item/{{ item[0] }}">
+                    <button>Edit</button>
+                </a>
+
+                <a href="/delete_menu_item/{{ item[0] }}"
+                    onclick="return confirm('Are you sure you want to delete this menu item?');">
+                    <button>Delete</button>
+                </a>
+
+            <br><br>
+
+            <br><br>
+
         </div>
 
     {% endfor %}
@@ -52,12 +65,12 @@
 
 <hr>
 
-<button>Edit Restaurant</button>
+<a href="/edit_restaurant/{{ restaurant[0] }}">
+    <button>Edit Restaurant</button>
+</a>
 
 <a href="/restaurant/{{ restaurant[0] }}/add_menu_item">
-
     <button>Add Menu Item</button>
-
 </a>
 
 <br><br>

@@ -180,6 +180,54 @@ def update_menu_item(
     conn.commit()
     conn.close()
 
+def delete_menu_item(menu_item_id):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM menu_items
+        WHERE id = ?
+        """,
+        (menu_item_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+def update_restaurant(
+    restaurant_id,
+    restaurant_name,
+    phone_number,
+    address,
+    cuisine_type
+):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE restaurants
+        SET
+            restaurant_name = ?,
+            phone_number = ?,
+            address = ?,
+            cuisine_type = ?
+        WHERE id = ?
+        """,
+        (
+            restaurant_name,
+            phone_number,
+            address,
+            cuisine_type,
+            restaurant_id
+        )
+    )
+
+    conn.commit()
+    conn.close()
 
 def create_database():
     conn = sqlite3.connect("food_platform.db")
