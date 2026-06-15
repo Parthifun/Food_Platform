@@ -11,17 +11,32 @@
     <p>You are logged in successfully.</p>
 
     <p>Role: {{ role }}</p>
-    <a href="/add_restaurant">
-        <button>Add Restaurant</button>
-    </a>
 
-    <a href="/view_restaurants">
-        <button>View My Restaurants</button>
-    </a>
+    {% if role == "Customer" %}
+
+        <a href="/restaurants">
+            <button>Browse Restaurants</button>
+        </a>
+
+    {% elif role == "Restaurant Owner" %}
+
+        <a href="/add_restaurant">
+            <button>Add Restaurant</button>
+        </a>
+
+        <a href="/view_restaurants">
+            <button>View My Restaurants</button>
+        </a>
+
+    {% elif role == "Admin" %}
+
+        <button>Manage Users</button>
+
+        <button>Manage Restaurants</button>
+
+    {% endif %}
 
     <br><br>
-
-    <br>
 
     <a href="/logout">Logout</a>
 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurants</title>
+</head>
+
+<body>
+
+<h1>Restaurants</h1>
+
+{% if restaurants %}
+
+    {% for restaurant in restaurants %}
+
+        <div>
+
+            <h2>
+                <a href="/customer_restaurant/{{ restaurant[0] }}">
+                    {{ restaurant[2] }}
+                </a>
+            </h2>
+
+            <p>
+                {{ restaurant[5] }}
+            </p>
+
+            <p>
+                {{ restaurant[4] }}
+            </p>
+
+            <p>
+                {{ restaurant[3] }}
+            </p>
+
+            <hr>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No restaurants available.</p>
+
+{% endif %}
+
+<br>
+
+<a href="/dashboard">
+    <button>Back</button>
+</a>
+
+</body>
+</html>

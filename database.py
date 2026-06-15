@@ -229,6 +229,23 @@ def update_restaurant(
     conn.commit()
     conn.close()
 
+def get_all_restaurants():
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM restaurants
+        ORDER BY restaurant_name
+    """)
+
+    restaurants = cursor.fetchall()
+
+    conn.close()
+
+    return restaurants
+
 def create_database():
     conn = sqlite3.connect("food_platform.db")
 

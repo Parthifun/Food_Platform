@@ -14,7 +14,8 @@ from database import (
     get_menu_item_by_id,
     update_menu_item,
     delete_menu_item,
-    update_restaurant
+    update_restaurant,
+    get_all_restaurants
 )
 app = Flask(__name__)
 app.secret_key = "food_platform_secret_key"
@@ -63,6 +64,9 @@ def add_restaurant():
     if "first_name" not in session:
         return redirect(url_for("login"))
 
+    if session["role"] != "Restaurant Owner":
+        return "Access Denied"
+
     if request.method == "POST":
 
         restaurant_name = request.form["restaurant_name"]
@@ -88,6 +92,9 @@ def view_restaurants():
     if "email" not in session:
         return redirect(url_for("login"))
 
+    if session["role"] != "Restaurant Owner":
+        return "Access Denied"
+
     restaurants = get_restaurants_by_owner(
         session["email"]
     )
@@ -97,11 +104,41 @@ def view_restaurants():
         restaurants=restaurants
     )
 
+@app.route("/restaurants")
+def customer_restaurants():
+
+    restaurants = get_all_restaurants()
+
+    return render_template(
+        "customer_restaurants.html",
+        restaurants=restaurants
+    )
+
+@app.route("/customer_restaurant/<int:restaurant_id>")
+def customer_restaurant_details(restaurant_id):
+
+    restaurant = get_restaurant_by_id(
+        restaurant_id
+    )
+
+    menu_items = get_menu_items_by_restaurant(
+        restaurant_id
+    )
+
+    return render_template(
+        "customer_restaurant_details.html",
+        restaurant=restaurant,
+        menu_items=menu_items
+    )
+
 @app.route("/restaurant/<int:restaurant_id>")
 def restaurant_details(restaurant_id):
 
     if "email" not in session:
         return redirect(url_for("login"))
+    
+    if session["role"] != "Restaurant Owner":
+        return "Access Denied"
 
     restaurant = get_restaurant_by_id(
         restaurant_id
@@ -117,43 +154,7 @@ def restaurant_details(restaurant_id):
         menu_items=menu_items
     )
 
-@app.route(
-    "/edit_restaurant/<int:restaurant_id>",
-    methods=["GET", "POST"]
-)
-def edit_restaurant(restaurant_id):
 
-    if "email" not in session:
-        return redirect(url_for("login"))
-
-    restaurant = get_restaurant_by_id(restaurant_id)
-
-    if request.method == "POST":
-
-        restaurant_name = request.form["restaurant_name"]
-        phone_number = request.form["phone_number"]
-        address = request.form["address"]
-        cuisine_type = request.form["cuisine_type"]
-
-        update_restaurant(
-            restaurant_id,
-            restaurant_name,
-            phone_number,
-            address,
-            cuisine_type
-        )
-
-        return redirect(
-            url_for(
-                "restaurant_details",
-                restaurant_id=restaurant_id
-            )
-        )
-
-    return render_template(
-        "edit_restaurant.html",
-        restaurant=restaurant
-    )
 
 @app.route(
     "/restaurant/<int:restaurant_id>/add_menu_item",
@@ -163,6 +164,8 @@ def add_menu_item(restaurant_id):
 
     if "email" not in session:
         return redirect(url_for("login"))
+    if session["role"] != "Restaurant Owner":
+        return "Access Denied"
 
     if request.method == "POST":
 
@@ -198,6 +201,8 @@ def edit_menu_item(menu_item_id):
 
     if "email" not in session:
         return redirect(url_for("login"))
+    if session["role"] != "Restaurant Owner":
+        return "Access Denied"
 
     menu_item = get_menu_item_by_id(menu_item_id)
 
