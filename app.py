@@ -9,8 +9,10 @@ from database import (
     get_user_by_email,
     get_user_by_login,
     get_user_by_phone,
-    create_user
-    
+    create_user,
+    create_menu_item,
+    get_menu_item_by_id,
+    update_menu_item
 )
 app = Flask(__name__)
 app.secret_key = "food_platform_secret_key"
@@ -111,6 +113,41 @@ def restaurant_details(restaurant_id):
         "restaurant_details.html",
         restaurant=restaurant,
         menu_items=menu_items
+    )
+
+@app.route(
+    "/restaurant/<int:restaurant_id>/add_menu_item",
+    methods=["GET", "POST"]
+)
+def add_menu_item(restaurant_id):
+
+    if "email" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+
+        item_name = request.form["item_name"]
+        description = request.form["description"]
+        price = request.form["price"]
+        category = request.form["category"]
+
+        create_menu_item(
+            restaurant_id,
+            item_name,
+            description,
+            price,
+            category
+        )
+
+        return redirect(
+            url_for(
+                "restaurant_details",
+                restaurant_id=restaurant_id
+            )
+        )
+
+    return render_template(
+        "add_menu_item.html"
     )
 
 @app.route("/logout")

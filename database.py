@@ -92,8 +92,94 @@ def get_menu_items_by_restaurant(restaurant_id):
 
     return menu_items
 
-
 import sqlite3
+
+def create_menu_item(
+    restaurant_id,
+    item_name,
+    description,
+    price,
+    category
+):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO menu_items
+        (
+            restaurant_id,
+            item_name,
+            description,
+            price,
+            category
+        )
+        VALUES (?, ?, ?, ?, ?)
+    """,
+    (
+        restaurant_id,
+        item_name,
+        description,
+        price,
+        category
+    ))
+
+    conn.commit()
+    conn.close()
+
+def get_menu_item_by_id(menu_item_id):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM menu_items
+        WHERE id = ?
+        """,
+        (menu_item_id,)
+    )
+
+    menu_item = cursor.fetchone()
+
+    conn.close()
+
+    return menu_item
+
+def update_menu_item(
+    menu_item_id,
+    item_name,
+    description,
+    price,
+    category
+):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE menu_items
+        SET
+            item_name = ?,
+            description = ?,
+            price = ?,
+            category = ?
+        WHERE id = ?
+        """,
+        (
+            item_name,
+            description,
+            price,
+            category,
+            menu_item_id
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
 
 def create_database():
     conn = sqlite3.connect("food_platform.db")
@@ -151,23 +237,7 @@ def create_database():
     )
     """)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS menu_items (
-
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-        restaurant_id INTEGER NOT NULL,
-
-        item_name TEXT NOT NULL,
-
-        description TEXT,
-
-        price REAL NOT NULL,
-
-        category TEXT NOT NULL
-
-    )
-    """)
+    
 
     conn.commit()
     conn.close()
