@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Cart</title>
+</head>
+
+<body>
+
+<h1>My Cart</h1>
+
+{% if cart_items %}
+
+    {% for item in cart_items %}
+
+        <p>
+
+            {{ item[1] }}
+
+            -
+
+            ${{ item[2] }}
+
+        </p>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>Your cart is empty.</p>
+
+{% endif %}
+
+<br>
+
+<a href="/dashboard">
+    <button>Back</button>
+</a>
+
+</body>
+</html>

@@ -17,6 +17,10 @@
         <a href="/restaurants">
             <button>Browse Restaurants</button>
         </a>
+        
+        <a href="/cart">
+            <button>My Cart</button>
+        </a>
 
     {% elif role == "Restaurant Owner" %}
 
@@ -30,7 +34,9 @@
 
     {% elif role == "Admin" %}
 
-        <button>Manage Users</button>
+        <a href="/manage_users">
+            <button>Manage Users</button>
+        </a>
 
         <button>Manage Restaurants</button>
 

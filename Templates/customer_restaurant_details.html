@@ -40,7 +40,9 @@
 
             <br><br>
 
-            <button>Add To Cart</button>
+            <a href="/add_to_cart/{{ item[0] }}">
+                <button>Add To Cart</button>
+            </a>
 
             <br><br>
 
@@ -57,6 +59,10 @@
 {% endif %}
 
 <br>
+
+<a href="/cart">
+    <button>View Cart</button>
+</a>
 
 <a href="/restaurants">
     <button>Back</button>

@@ -15,7 +15,9 @@ from database import (
     update_menu_item,
     delete_menu_item,
     update_restaurant,
-    get_all_restaurants
+    get_all_restaurants,
+    add_to_cart,
+    get_cart_items
 )
 app = Flask(__name__)
 app.secret_key = "food_platform_secret_key"
@@ -252,6 +254,44 @@ def delete_menu_item_route(menu_item_id):
         )
     )
 
+@app.route("/add_to_cart/<int:menu_item_id>")
+def add_to_cart_route(menu_item_id):
+
+    if "email" not in session:
+        return redirect(url_for("login"))
+
+    menu_item = get_menu_item_by_id(menu_item_id)
+
+    restaurant_id = menu_item[1]
+
+    add_to_cart(
+        session["email"],
+        restaurant_id,
+        menu_item_id
+    )
+
+    return redirect(
+        url_for(
+            "customer_restaurant_details",
+            restaurant_id=restaurant_id
+        )
+    )
+
+@app.route("/cart")
+def cart():
+
+    if "email" not in session:
+        return redirect(url_for("login"))
+
+    cart_items = get_cart_items(
+        session["email"]
+    )
+
+    return render_template(
+        "cart.html",
+        cart_items=cart_items
+    )
+
 @app.route("/logout")
 def logout():
 
@@ -288,7 +328,7 @@ def register():
             role
         )
 
-        return render_template("registration_success.html")
+        return "Registration Successful"
     return render_template("register.html")
 
 if __name__ == "__main__":
