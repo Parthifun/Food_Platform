@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Incoming Orders</title>
+</head>
+
+<body>
+
+{% include "menu.html" %}
+
+<h1>Incoming Orders</h1>
+
+{% if orders %}
+
+    {% for order in orders %}
+
+        <div>
+
+            <h3>Order #{{ order[0] }}</h3>
+
+            <p>
+                Customer:
+                {{ order[1] }}
+            </p>
+
+            <p>
+                Total:
+                ${{ order[3] }}
+            </p>
+
+            <p>
+                Order Type:
+                {{ order[4] }}
+            </p>
+
+            <p>
+                Payment:
+                {{ order[5] }}
+            </p>
+
+            <p>
+                Status:
+                {{ order[6] }}
+            </p>
+
+            <br>
+
+            <a href="/update_order_status/{{ order[0] }}/Preparing">
+                <button>Preparing</button>
+            </a>
+
+            <a href="/update_order_status/{{ order[0] }}/Ready">
+                <button>Ready</button>
+            </a>
+
+            <a href="/update_order_status/{{ order[0] }}/Delivered">
+                <button>Delivered</button>
+            </a>
+
+            <hr>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No incoming orders.</p>
+
+{% endif %}
+
+<br>
+
+<a href="/dashboard">
+    <button type="button">
+        Back
+    </button>
+</a>
+
+</body>
+</html>

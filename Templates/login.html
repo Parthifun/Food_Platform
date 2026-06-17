@@ -5,7 +5,7 @@
 </head>
 
 <body>
-
+{% include "menu.html" %}
     <h1>Login</h1>
 
     <form method="POST">
@@ -30,7 +30,11 @@
 
     <br>
 
-    <a href="/">Back to Home</a>
+    <a href="/">
+        <button type="button">
+            Back
+        </button>
+    </a>
 
 <script>
 
@@ -47,6 +51,12 @@ function togglePassword() {
 }
 
 </script>    
-    
+    <br><br>
+
+    <a href="/">
+        <button type="button">
+            Back
+        </button>
+    </a>    
 </body>
 </html>

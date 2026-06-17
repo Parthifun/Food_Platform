@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Orders</title>
+</head>
+
+<body>
+
+{% include "menu.html" %}
+
+<h1>My Orders</h1>
+
+{% if orders %}
+
+    {% for order in orders %}
+
+        <div>
+
+            <h3>Order #{{ order[0] }}</h3>
+
+            <p>Total: ${{ order[2] }}</p>
+
+            <p>Order Type: {{ order[3] }}</p>
+
+            <p>Payment Method: {{ order[4] }}</p>
+
+            <p>Status: {{ order[5] }}</p>
+            <a href="/order/{{ order[0] }}">
+                <button>View Details</button>
+            </a>
+
+            <hr>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>No orders found.</p>
+
+{% endif %}
+<br><br>
+
+<a href="/dashboard">
+    <button type="button">
+        Back
+    </button>
+</a>
+
+<a href="/restaurants">
+    <button type="button">
+        Order More Food
+    </button>
+</a>
+</body>
+</html>

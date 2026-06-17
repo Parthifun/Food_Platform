@@ -489,9 +489,42 @@ def create_database():
     )
     """)
 
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS orders (
+
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        customer_email TEXT NOT NULL,
+                   
+        restaurant_id INTEGER NOT NULL,           
+
+        total_amount REAL NOT NULL,
+
+        order_type TEXT NOT NULL,
+
+        payment_method TEXT NOT NULL,
+
+        status TEXT NOT NULL
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS order_items (
+
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        order_id INTEGER NOT NULL,
+
+        menu_item_id INTEGER NOT NULL,
+
+        quantity INTEGER NOT NULL
+    )
+    """)
+
+
     conn.commit()
     conn.close()
-
+    
     print("Database created successfully")
 
 def get_user_by_email(email):
@@ -510,7 +543,6 @@ def get_user_by_email(email):
 
     return user
 
-
 def get_user_by_phone(phone_number):
 
     conn = sqlite3.connect("food_platform.db")
@@ -526,7 +558,6 @@ def get_user_by_phone(phone_number):
     conn.close()
 
     return user
-
 
 def create_user(
     first_name,
@@ -594,22 +625,145 @@ def add_to_cart(
 
     conn = sqlite3.connect("food_platform.db")
     cursor = conn.cursor()
+    cursor.execute(
+        """
+        SELECT restaurant_id
+        FROM cart
+        WHERE customer_email = ?
+        LIMIT 1
+        """,
+        (customer_email,)
+    )
 
-    cursor.execute("""
-        INSERT INTO cart
+    existing_cart = cursor.fetchone()
+
+    if existing_cart and existing_cart[0] != restaurant_id:
+
+        conn.close()
+
+        return False
+
+    cursor.execute(
+        """
+        SELECT id, quantity
+        FROM cart
+        WHERE customer_email = ?
+        AND menu_item_id = ?
+        """,
         (
             customer_email,
-            restaurant_id,
-            menu_item_id,
-            quantity
+            menu_item_id
         )
-        VALUES (?, ?, ?, 1)
-    """,
-    (
-        customer_email,
-        restaurant_id,
-        menu_item_id
-    ))
+    )
+
+    cart_item = cursor.fetchone()
+
+    if cart_item:
+
+        cursor.execute(
+            """
+            UPDATE cart
+            SET quantity = quantity + 1
+            WHERE id = ?
+            """,
+            (cart_item[0],)
+        )
+
+    else:
+
+        cursor.execute(
+            """
+            INSERT INTO cart
+            (
+                customer_email,
+                restaurant_id,
+                menu_item_id,
+                quantity
+            )
+            VALUES (?, ?, ?, 1)
+            """,
+            (
+                customer_email,
+                restaurant_id,
+                menu_item_id
+            )
+        )
+
+    conn.commit()
+    conn.close()
+    return True
+
+def remove_cart_item(cart_id):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM cart
+        WHERE id = ?
+        """,
+        (cart_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+def increase_quantity(cart_id):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE cart
+        SET quantity = quantity + 1
+        WHERE id = ?
+        """,
+        (cart_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+def decrease_quantity(cart_id):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT quantity
+        FROM cart
+        WHERE id = ?
+        """,
+        (cart_id,)
+    )
+
+    item = cursor.fetchone()
+
+    if item:
+
+        if item[0] > 1:
+
+            cursor.execute(
+                """
+                UPDATE cart
+                SET quantity = quantity - 1
+                WHERE id = ?
+                """,
+                (cart_id,)
+            )
+
+        else:
+
+            cursor.execute(
+                """
+                DELETE FROM cart
+                WHERE id = ?
+                """,
+                (cart_id,)
+            )
 
     conn.commit()
     conn.close()
@@ -624,7 +778,10 @@ def get_cart_items(customer_email):
             cart.id,
             menu_items.item_name,
             menu_items.price,
-            cart.quantity
+            cart.quantity,
+            menu_items.price * cart.quantity,
+            cart.restaurant_id,
+            cart.menu_item_id
         FROM cart
         JOIN menu_items
         ON cart.menu_item_id = menu_items.id
@@ -638,6 +795,154 @@ def get_cart_items(customer_email):
     conn.close()
 
     return cart_items
+
+def create_order(
+    customer_email,
+    restaurant_id,
+    total_amount,
+    order_type,
+    payment_method
+    
+):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    INSERT INTO orders
+    (
+        customer_email,
+        restaurant_id,
+        total_amount,
+        order_type,
+        payment_method,
+        status
+    )
+    VALUES (?, ?, ?, ?, ?, ?)
+    """,
+    (
+        customer_email,
+        restaurant_id,
+        total_amount,
+        order_type,
+        payment_method,
+        "Confirmed"
+    ))
+
+    order_id = cursor.lastrowid
+
+    conn.commit()
+    conn.close()
+
+    return order_id
+
+def create_order_item(
+    order_id,
+    menu_item_id,
+    quantity
+):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    INSERT INTO order_items
+    (
+        order_id,
+        menu_item_id,
+        quantity
+    )
+    VALUES (?, ?, ?)
+    """,
+    (
+        order_id,
+        menu_item_id,
+        quantity
+    ))
+
+    order_id = cursor.lastrowid
+
+    conn.commit()
+    conn.close()
+
+    return order_id
+
+def clear_cart(customer_email):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM cart
+        WHERE customer_email = ?
+        """,
+        (customer_email,)
+    )
+
+    conn.commit()
+    conn.close()   
+
+def get_orders_by_customer(customer_email):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT *
+    FROM orders
+    WHERE customer_email = ?
+    ORDER BY id DESC
+    """,
+    (customer_email,)
+    )
+
+    orders = cursor.fetchall()
+
+    conn.close()
+
+    return orders
+
+def get_orders_by_restaurant(restaurant_id):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT *
+    FROM orders
+    WHERE restaurant_id = ?
+    ORDER BY id DESC
+    """,
+    (restaurant_id,)
+    )
+
+    orders = cursor.fetchall()
+
+    conn.close()
+
+    return orders
+
+def update_order_status(
+    order_id,
+    status
+):
+
+    conn = sqlite3.connect("food_platform.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    UPDATE orders
+    SET status = ?
+    WHERE id = ?
+    """,
+    (
+        status,
+        order_id
+    ))
+
+    conn.commit()
+    conn.close()
 
 if __name__ == "__main__":
     create_database()

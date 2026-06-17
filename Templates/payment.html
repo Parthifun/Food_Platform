@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+</head>
+
+<body>
+
+{% include "menu.html" %}
+
+<h1>Payment</h1>
+
+<p>
+    Order Type:
+    <strong>{{ order_type }}</strong>
+</p>
+
+<form action="/order_success" method="POST">
+
+    <input
+        type="hidden"
+        name="order_type"
+        value="{{ order_type }}"
+    >
+
+    <h3>Payment Method</h3>
+
+    {% if order_type == "Pickup" %}
+
+        <input
+            type="radio"
+            name="payment_method"
+            value="Pay At Pickup"
+            required
+        >
+        Pay At Pickup
+
+        <br><br>
+
+        <input
+            type="radio"
+            name="payment_method"
+            value="Credit Card"
+        >
+        Credit Card
+
+        <br><br>
+
+        <input
+            type="radio"
+            name="payment_method"
+            value="Debit Card"
+        >
+        Debit Card
+
+        <br><br>
+
+        <input
+            type="radio"
+            name="payment_method"
+            value="Apple Pay"
+        >
+        Apple Pay
+
+    {% else %}
+
+        <input
+            type="radio"
+            name="payment_method"
+            value="Cash On Delivery"
+            required
+        >
+        Cash On Delivery
+
+        <br><br>
+
+        <input
+            type="radio"
+            name="payment_method"
+            value="Credit Card"
+        >
+        Credit Card
+
+        <br><br>
+
+        <input
+            type="radio"
+            name="payment_method"
+            value="Debit Card"
+        >
+        Debit Card
+
+        <br><br>
+
+        <input
+            type="radio"
+            name="payment_method"
+            value="Apple Pay"
+        >
+        Apple Pay
+
+        <br><br>
+
+        <input
+            type="radio"
+            name="payment_method"
+            value="Google Pay"
+        >
+        Google Pay
+
+    {% endif %}
+
+    <br><br>
+
+    <a href="/checkout">
+        <button type="button">
+            Back
+        </button>
+    </a>
+
+    &nbsp;&nbsp;
+
+    <button type="submit">
+        Place Order
+    </button>
+
+</form>
+
+</body>
+</html>

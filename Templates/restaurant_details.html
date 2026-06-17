@@ -5,7 +5,32 @@
 </head>
 
 <body>
+<details>
+    <summary>☰ Menu</summary>
 
+    <br>
+
+    <a href="/dashboard">Home</a><br><br>
+    <a href="/profile">Profile</a><br><br>
+
+    {% if session["role"] == "Customer" %}
+        <a href="/restaurants">Browse Restaurants</a><br><br>
+        <a href="/cart">Cart</a><br><br>
+        <a href="/orders">My Orders</a><br><br>
+    {% endif %}
+
+    {% if session["role"] == "Restaurant Owner" %}
+        <a href="/view_restaurants">My Restaurants</a><br><br>
+        <a href="/add_restaurant">Add Restaurant</a><br><br>
+    {% endif %}
+
+    {% if session["role"] == "Admin" %}
+        <a href="/manage_users">Manage Users</a><br><br>
+        <a href="/manage_restaurants">Manage Restaurants</a><br><br>
+    {% endif %}
+
+    <a href="/logout">Logout</a>
+</details>
 <h1>{{ restaurant[2] }}</h1>
 
 <p>

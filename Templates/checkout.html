@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
+    <title>Checkout</title>
 </head>
 
 <body>
+
 <details>
     <summary>☰ Menu</summary>
 
@@ -31,45 +32,44 @@
 
     <a href="/logout">Logout</a>
 </details>
-    <h1>Welcome {{ first_name }}</h1>
 
-    <p>You are logged in successfully.</p>
+<hr>
 
-    <p>Role: {{ role }}</p>
+<h1>Checkout</h1>
 
-    {% if role == "Customer" %}
+<form action="/payment" method="POST">
 
-        <a href="/restaurants">
-            <button>Browse Restaurants</button>
-        </a>
-        
-        <a href="/cart">
-            <button>My Cart</button>
-        </a>
+    <h3>Order Type</h3>
 
-    {% elif role == "Restaurant Owner" %}
-
-        <a href="/add_restaurant">
-            <button>Add Restaurant</button>
-        </a>
-
-        <a href="/view_restaurants">
-            <button>View My Restaurants</button>
-        </a>
-
-    {% elif role == "Admin" %}
-
-        <a href="/manage_users">
-            <button>Manage Users</button>
-        </a>
-
-        <button>Manage Restaurants</button>
-
-    {% endif %}
+    <input type="radio"
+           name="order_type"
+           value="Pickup"
+           required>
+    Pickup
 
     <br><br>
 
-    <a href="/logout">Logout</a>
+    <input type="radio"
+           name="order_type"
+           value="Delivery">
+    Delivery
+
+    <br><br>
+
+    <a href="/cart">
+        <button type="button">
+            Back
+        </button>
+    </a>
+
+    &nbsp;&nbsp;
+
+
+    <button type="submit">
+        Continue To Payment
+    </button>
+
+</form>
 
 </body>
 </html>

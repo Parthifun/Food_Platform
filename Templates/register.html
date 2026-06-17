@@ -4,7 +4,7 @@
     <title>Register</title>
 </head>
 <body>
-
+{% include "menu.html" %}
 <h1>Create Account</h1>
 
 <form method="POST">
@@ -59,7 +59,11 @@ Password must contain:
     <option>Restaurant Owner</option>
     <option>Admin</option>
 </select>
+<br><br>
 
+<a href="/">
+    <button type="button">Back</button>
+</a>
 <br><br>
 
 <button type="submit">Register</button>
